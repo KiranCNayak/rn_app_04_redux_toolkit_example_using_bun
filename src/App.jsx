@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
 
 import PostsList from './components/PostsList';
 import { THEME_VARIANT } from './data/constants';
@@ -39,13 +38,7 @@ function App() {
       return;
     }
 
-    dispatch(
-      addPost({
-        id: nanoid(),
-        title: inputTextTitle,
-        description: inputTextDescription,
-      }),
-    );
+    dispatch(addPost(inputTextTitle, inputTextDescription));
 
     clearTIData();
   };
