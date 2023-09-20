@@ -1,6 +1,6 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import {THEME_VARIANT} from '../../../data/constants';
+import { THEME_VARIANT } from '../../../data/constants';
 
 const initialState = {
   theme: THEME_VARIANT.dark,
@@ -22,5 +22,5 @@ export const themeSlice = createSlice({
   },
 });
 
-export const {resetTheme, toggleTheme} = themeSlice.actions;
+export const { resetTheme, toggleTheme } = themeSlice.actions;
 export default themeSlice.reducer;

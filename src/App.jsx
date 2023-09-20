@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {THEME_VARIANT} from './data/constants';
-import {toggleTheme} from './redux/features/theme/themeSlice';
+import { THEME_VARIANT } from './data/constants';
+import { toggleTheme } from './redux/features/theme/themeSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ function App() {
           <Text style={styles.touchableTextStyle}>Toggle Theme</Text>
         </TouchableOpacity>
       </View>
-      <Text style={{color: theme === THEME_VARIANT.dark ? '#fff' : '#000'}}>
+      <Text style={{ color: theme === THEME_VARIANT.dark ? '#fff' : '#000' }}>
         {'Hello World!'}
       </Text>
       <Text
