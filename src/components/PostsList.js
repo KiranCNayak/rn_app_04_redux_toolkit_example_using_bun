@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import PostItem from './postItem/PostItem';
 import { selectAllPosts } from '../redux/features/posts/postsSlice';
 
 const PostsList = () => {
@@ -11,10 +12,7 @@ const PostsList = () => {
     posts && posts.length > 0 ? (
       <View style={styles.postRootContainerStyle}>
         {posts.map(post => (
-          <View key={post.id} style={styles.postContainerStyle}>
-            <Text style={styles.postTitleTextStyle}>{post.title}</Text>
-            <Text>{post.description}</Text>
-          </View>
+          <PostItem key={post.id} post={post} />
         ))}
       </View>
     ) : (
@@ -32,19 +30,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  postContainerStyle: {
-    backgroundColor: '#111',
-    marginBottom: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-
   postRootContainerStyle: {
     padding: 8,
-  },
-
-  postTitleTextStyle: {
-    fontSize: 16,
-    fontWeight: '700',
   },
 });

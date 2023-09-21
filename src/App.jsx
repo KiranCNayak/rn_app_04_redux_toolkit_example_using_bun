@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Dropdown from './components/dropdown/Dropdown';
 import PostsList from './components/PostsList';
 import { THEME_VARIANT } from './data/constants';
 import { addPost } from './redux/features/posts/postsSlice';
 import { toggleTheme } from './redux/features/theme/themeSlice';
+import { selectAllUsers } from './redux/features/users/usersSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -21,24 +23,14 @@ function App() {
   const titleTextInputRef = useRef(null);
 
   const theme = useSelector(state => state.theme.theme);
+  const { users } = useSelector(selectAllUsers);
 
   const [inputTextDescription, setInputTextDescription] = useState('');
   const [inputTextTitle, setInputTextTitle] = useState('');
+  const [selectedDDItem, setSelectedDDItem] = useState(users[0]);
 
   const onAddPostTouchablePressed = () => {
-    // Empty title text Validation
-    if (inputTextTitle === '') {
-      titleTextInputRef.current.focus();
-      return;
-    }
-
-    // Empty description text Validation
-    if (inputTextDescription === '') {
-      descriptionTextInputRef.current.focus();
-      return;
-    }
-
-    dispatch(addPost(inputTextTitle, inputTextDescription));
+    dispatch(addPost(inputTextTitle, inputTextDescription, selectedDDItem.id));
 
     clearTIData();
   };
@@ -46,9 +38,24 @@ function App() {
   const clearTIData = () => {
     setInputTextDescription('');
     setInputTextTitle('');
+    setSelectedDDItem(users[0]);
 
     titleTextInputRef.current.focus();
   };
+
+  const setSelectedDropdownItem = item => {
+    setSelectedDDItem(item);
+  };
+
+  const isAddBtnDisabled =
+    inputTextTitle === '' ||
+    inputTextDescription === '' ||
+    selectedDDItem?.name === users[0].name;
+
+  const isClearBtnDisabled =
+    inputTextTitle === '' &&
+    inputTextDescription === '' &&
+    selectedDDItem.id === users[0].id;
 
   const AddPostComponent = (
     <View style={styles.addPostRootContainerStyle}>
@@ -66,18 +73,48 @@ function App() {
         style={styles.descriptionTIStyle}
         value={inputTextDescription}
       />
+      <Dropdown
+        selectedDDItem={selectedDDItem}
+        setSelectedDropdownItem={setSelectedDropdownItem}
+      />
       <View style={styles.postsTouchableContainerStyle}>
         <TouchableOpacity
           activeOpacity={0.6}
+          disabled={isAddBtnDisabled}
           onPress={onAddPostTouchablePressed}
-          style={[styles.postCRUDTouchableStyle, styles.positiveColorStyle]}>
-          <Text style={styles.postCRUDTouchableTextStyle}>ADD</Text>
+          style={[
+            styles.postCRUDTouchableStyle,
+            isAddBtnDisabled
+              ? styles.positiveDisabledColorStyle
+              : styles.positiveEnabledColorStyle,
+          ]}>
+          <Text
+            style={[
+              styles.postCRUDTouchableTextStyle,
+              isAddBtnDisabled
+                ? styles.postCRUDTouchableDisabledTextStyle
+                : styles.postCRUDTouchableEnabledTextStyle,
+            ]}>
+            ADD
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.6}
           onPress={clearTIData}
-          style={[styles.negativeColorStyle, styles.postCRUDTouchableStyle]}>
-          <Text style={styles.postCRUDTouchableTextStyle}>CLEAR</Text>
+          style={[
+            isClearBtnDisabled
+              ? styles.negativeColorDisabledStyle
+              : styles.negativeColorEnabledStyle,
+            styles.postCRUDTouchableStyle,
+          ]}>
+          <Text
+            style={[
+              isClearBtnDisabled
+                ? styles.postCRUDTouchableDisabledTextStyle
+                : styles.postCRUDTouchableEnabledTextStyle,
+            ]}>
+            CLEAR
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -119,19 +156,24 @@ const styles = StyleSheet.create({
 
   descriptionTIStyle: {
     backgroundColor: '#333',
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    marginTop: 4,
+    borderRadius: 4,
+    marginVertical: 4,
     padding: 12,
   },
 
-  negativeColorStyle: {
+  negativeColorDisabledStyle: {
+    backgroundColor: '#582310',
+  },
+
+  negativeColorEnabledStyle: {
     backgroundColor: '#a82310',
   },
 
-  positiveColorStyle: {
+  positiveDisabledColorStyle: {
+    backgroundColor: '#235810',
+  },
+
+  positiveEnabledColorStyle: {
     backgroundColor: '#23a810',
   },
 
@@ -144,7 +186,12 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
-  postCRUDTouchableTextStyle: {
+  postCRUDTouchableDisabledTextStyle: {
+    color: '#999',
+    fontWeight: '500',
+  },
+
+  postCRUDTouchableEnabledTextStyle: {
     color: '#fff',
     fontWeight: '700',
   },
